@@ -3,41 +3,41 @@
 /*                                                        :::      ::::::::   */
 /*   get_next_line.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lfabbian <lfabbian@student.42.fr>          +#+  +:+       +#+        */
+/*   By: qliso <qliso@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2022/11/12 16:43:10 by lfabbian          #+#    #+#             */
-/*   Updated: 2022/12/04 16:55:09 by lfabbian         ###   ########.fr       */
+/*   Created: 2024/11/21 20:23:53 by qliso             #+#    #+#             */
+/*   Updated: 2024/11/21 20:23:56 by qliso            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "get_next_line.h"
+#include "get_next_line_bonus.h"
 
 char	*get_next_line(int fd)
 {
 	char		*buf_read;
-	static char	*buf_line;
+	static char	*buf_line[FD_MAX];
 	char		*line;
 
 	line = NULL;
 	buf_read = malloc((BUFFER_SIZE + 1) * sizeof(char));
-	if (fd < 0 || BUFFER_SIZE <= 0 || read(fd, 0, 0) < 0)
+	if (BUFFER_SIZE <= 0 || fd < 0 || read(fd, 0, 0) < 0)
 	{
-		free(buf_line);
+		free(buf_line[fd]);
 		free(buf_read);
-		buf_line = NULL;
+		buf_line[fd] = NULL;
 		buf_read = NULL;
 		return (NULL);
 	}
 	if (!buf_read)
 		return (NULL);
-	buf_line = set_buf_line(fd, buf_line, buf_read);
-	if (*buf_line == 0)
+	buf_line[fd] = set_buf_line(fd, buf_line[fd], buf_read);
+	if (*buf_line[fd] == 0)
 	{
-		free (buf_line);
-		return (buf_line = 0);
+		free (buf_line[fd]);
+		return (buf_line[fd] = 0);
 	}
-	line = set_line(buf_line, line);
-	buf_line = offset_buf_line(buf_line);
+	line = set_line(buf_line[fd], line);
+	buf_line[fd] = offset_buf_line(buf_line[fd]);
 	return (line);
 }
 
@@ -117,22 +117,27 @@ char	*offset_buf_line(char	*buf_line)
 	return (new_bline);
 }
 
+/*
+#include <stdio.h>
 int main()
 {
-	int	fd;
+	int	fda = open("text.txt", O_RDONLY);
+	int	fdb = open("text.txt", O_RDONLY);
+	int	fdc = open("text.txt", O_RDONLY);
 
-	fd = open("text.txt", O_RDONLY);
-	printf("GNL 1: %s", get_next_line(fd));
-	printf("GNL 2: %s", get_next_line(fd));
-	printf("GNL 3: %s", get_next_line(fd));
-	printf("GNL 4: %s", get_next_line(fd));
-	printf("GNL 5: %s", get_next_line(fd));
-	printf("GNL 6: %s", get_next_line(fd));
-	printf("GNL 7: %s", get_next_line(fd));
-	printf("GNL 8: %s", get_next_line(fd));
-	printf("GNL 9: %s", get_next_line(fd));
-	printf("GNL 10: %s", get_next_line(fd));
-	printf("GNL 11: %s", get_next_line(fd));
-	printf("GNL 12: %s", get_next_line(fd));
-	close(fd);
+	printf("1 A: %s", get_next_line(fda));
+	printf("2 A: %s", get_next_line(fda));
+	printf("3 A: %s", get_next_line(fda));
+	printf("1 B: %s", get_next_line(fdb));
+	printf("2 B: %s", get_next_line(fdb));
+	printf("4 A: %s", get_next_line(fda));
+	printf("1 C: %s", get_next_line(fdc));
+	printf("2 C: %s", get_next_line(fdc));
+	printf("3 C: %s", get_next_line(fdc));
+	printf("5 A: %s", get_next_line(fda));
+	printf("6 A: %s", get_next_line(fda));
+	close(fda);
+	close(fdb);
+	close(fdc);
 }
+*/

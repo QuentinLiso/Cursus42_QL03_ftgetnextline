@@ -5,8 +5,8 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: qliso <qliso@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/11/21 14:44:52 by qliso             #+#    #+#             */
-/*   Updated: 2024/11/21 14:44:53 by qliso            ###   ########.fr       */
+/*   Created: 2024/11/21 20:22:50 by qliso             #+#    #+#             */
+/*   Updated: 2024/11/21 20:22:54 by qliso            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,61 +14,41 @@
 
 size_t	ft_strlen(const char *s)
 {
-	size_t	len;
+	int	len;
 
 	len = 0;
 	while (s[len])
-		++len;
+		len++;
 	return (len);
 }
 
-char *ft_strdup(const char *s)
+char	*ft_strdup(const char *s)
 {
-		char *dest;
-		size_t i;
-		
-		dest = malloc (ft_strlen(s) + 1);
-		if (!dest)
-				return (NULL);
-		i = 0;
-		while (s[i])
-		{
-				dest[i] = s[i];
-				i++;
-		}
-		dest[i] = '\0';
-		return (dest);
-}
+	char	*dest;
+	int		i;
 
-size_t	ft_strlcat(char *dst, const char *src, size_t siz)
-{
-	size_t	src_len;
-	size_t	dst_len;
-	size_t	i;
-
-	src_len = ft_strlen(src);
-	dst_len = ft_strlen(dst);
-	if (siz <= dst_len)
-		return (src_len + siz);
 	i = 0;
-	while (src[i] && i < siz - 1 - dst_len)
+	dest = malloc(sizeof(char) * (ft_strlen(s) + 1));
+	if (!dest)
+		return (NULL);
+	while (s[i])
 	{
-		dst[dst_len + i] = src[i];
+		dest[i] = s[i];
 		i++;
 	}
-	dst[dst_len + i] = '\0';
-	return (src_len + dst_len);
+	dest[i] = '\0';
+	return (dest);
 }
 
-char	*ft_strjoin(char *s1, char *s2)
+char	*ft_strjoin(char const *s1, char const *s2)
 {
-	size_t	i;
-	size_t	j;
+	int		i;
+	int		j;
 	char	*dest;
 
 	i = 0;
 	j = 0;
-	dest = malloc (sizeof(char) * (ft_strlen(s1) + ft_strlen(s2) + 1));
+	dest = malloc((ft_strlen(s1) + ft_strlen(s2) + 1) * sizeof(char));
 	if (!dest)
 		return (NULL);
 	while (s1[i])
@@ -76,26 +56,25 @@ char	*ft_strjoin(char *s1, char *s2)
 	i = 0;
 	while (s2[i])
 		dest[j++] = s2[i++];
-	dest[j] = '\0';
-	free(s1);
-	free(s2);
+	dest[j] = 0;
+	free ((void *)(s1));
 	return (dest);
 }
 
-char *ft_strchr(const char *s, int c)
+char	*ft_strchr(const char *s, int c)
 {
-		char *ptr;
-		char c_char;
-		
-		ptr = (char *) s;
-		c_char = (char) c;
-		while (*ptr && *ptr != c_char)
-				ptr++;
-		if (*ptr == c_char)
-				return (ptr);
-		else
-				return (NULL);
+	unsigned int	i;
+	char			c_char;
+
+	i = 0;
+	c_char = (char) c;
+	while (s[i])
+	{
+		if (s[i] == c_char)
+			return ((char *) &s[i]);
+		i++;
+	}
+	if (s[i] == c_char)
+		return ((char *) &s[i]);
+	return (NULL);
 }
-
-
-

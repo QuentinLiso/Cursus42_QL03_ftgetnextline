@@ -3,14 +3,14 @@
 /*                                                        :::      ::::::::   */
 /*   get_next_line_utils.c                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lfabbian <lfabbian@student.42.fr>          +#+  +:+       +#+        */
+/*   By: qliso <qliso@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2022/11/16 12:27:28 by lfabbian          #+#    #+#             */
-/*   Updated: 2022/12/04 16:37:19 by lfabbian         ###   ########.fr       */
+/*   Created: 2024/11/21 20:22:50 by qliso             #+#    #+#             */
+/*   Updated: 2024/11/21 20:22:54 by qliso            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "get_next_line.h"
+#include "get_next_line_bonus.h"
 
 size_t	ft_strlen(const char *s)
 {
@@ -64,7 +64,7 @@ char	*ft_strjoin(char const *s1, char const *s2)
 char	*ft_strchr(const char *s, int c)
 {
 	unsigned int	i;
-	char		c_char;
+	char			c_char;
 
 	i = 0;
 	c_char = (char) c;

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   get_next_line.h                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lfabbian <lfabbian@student.42.fr>          +#+  +:+       +#+        */
+/*   By: qliso <qliso@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2022/11/16 11:08:48 by lfabbian          #+#    #+#             */
-/*   Updated: 2022/12/04 16:42:30 by lfabbian         ###   ########.fr       */
+/*   Created: 2024/11/21 20:24:03 by qliso             #+#    #+#             */
+/*   Updated: 2024/11/21 20:24:06 by qliso            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,19 +15,18 @@
 # ifndef BUFFER_SIZE
 #  define BUFFER_SIZE 20
 # endif
+# define FD_MAX 1024
 # include <stdlib.h>
 # include <unistd.h>
 # include <fcntl.h>
-# include <stdio.h>
 
 char	*get_next_line(int fd);
-char	*set_buf_line(int fd, char *stash, char *buffer);
-char	*set_line(char *stash, char *line);
-char	*offset_buf_line(char *stash);
+char	*set_buf_line(int fd, char *buf_line, char *buf_read);
+char	*set_line(char *buf_line, char *line);
+char	*offset_buf_line(char *buf_line);
+size_t	ft_strlen(const char *s);
+char	*ft_strdup(const char *s);
 char	*ft_strjoin(char const *s1, char const *s2);
 char	*ft_strchr(const char *s, int c);
-char	*ft_substr(char const *s, unsigned int start, size_t len);
-char	*ft_strdup(const char *s);
-size_t	ft_strlen(const char *s);
 
 #endif

@@ -5,54 +5,83 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: qliso <qliso@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/11/21 14:47:52 by qliso             #+#    #+#             */
-/*   Updated: 2024/11/21 14:47:54 by qliso            ###   ########.fr       */
+/*   Created: 2024/11/21 20:23:53 by qliso             #+#    #+#             */
+/*   Updated: 2024/11/21 20:23:56 by qliso            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "get_next_line.h"
 
-static char *set_buf_line(int fd, char *buf_line, char *buf_read)
+char	*get_next_line(int fd)
 {
-	ssize_t	num_read;
+	char		*buf_read;
+	static char	*buf_line;
+	char		*line;
 
-	num_read = 1;
+	line = NULL;
+	buf_read = malloc((BUFFER_SIZE + 1) * sizeof(char));
+	if (fd < 0 || BUFFER_SIZE <= 0 || read(fd, 0, 0) < 0)
+	{
+		free(buf_line);
+		free(buf_read);
+		buf_line = NULL;
+		buf_read = NULL;
+		return (NULL);
+	}
+	if (!buf_read)
+		return (NULL);
+	buf_line = set_buf_line(fd, buf_line, buf_read);
+	if (*buf_line == 0)
+	{
+		free (buf_line);
+		return (buf_line = 0);
+	}
+	line = set_line(buf_line, line);
+	buf_line = offset_buf_line(buf_line);
+	return (line);
+}
+
+char	*set_buf_line(int fd, char *buf_line, char *buf_read)
+{
+	ssize_t	nbytes;
+
+	nbytes = 1;
 	if (!buf_line)
 		buf_line = ft_strdup("");
-	while(num_read > 0)
+	while (nbytes > 0)
 	{
-		num_read = read(fd, buf_read, BUFFER_SIZE);
-		if (num_read == -1)
+		nbytes = read(fd, buf_read, BUFFER_SIZE);
+		if (nbytes == -1)
 		{
-			free(buf_read);
+			free (buf_read);
 			return (NULL);
 		}
-		buf_read[num_read] = '\0';
-		buf_line = ft_strjoin(buf_line, buf_read);
-		if (ft_strchr(buf_read, '\n'))
-			break;
+		buf_read[nbytes] = '\0';
+		buf_line = ft_strjoin (buf_line, buf_read);
+		if ((ft_strchr(buf_read, '\n')))
+			break ;
 	}
-	free(buf_read);
+	free (buf_read);
 	return (buf_line);
 }
 
-static char *set_line(char *line, char *buf_line)
+char	*set_line(char *buf_line, char *line)
 {
-	unsigned int len;
-	unsigned int i;
+	int	start;
+	int	i;
 
+	start = 0;
+	i = 0;
 	if (!buf_line)
 		return (NULL);
-	len = 0;
-	i = 0;
-	while (buf_line[len] && buf_line[len] != '\n')
-		len++;
-	if (buf_line[len] == '\n')
-		len++;
-	line = malloc (len + 1);
+	while (buf_line[start] != '\n' && buf_line[start])
+		start++;
+	if (buf_line[start] == '\n')
+		start++;
+	line = malloc((start + 1) * sizeof(char));
 	if (!line)
 		return (NULL);
-	while (i < len)
+	while (i < start)
 	{
 		line[i] = buf_line[i];
 		i++;
@@ -61,71 +90,50 @@ static char *set_line(char *line, char *buf_line)
 	return (line);
 }
 
-static char *offset_buf_line(char *buf_line)
+char	*offset_buf_line(char	*buf_line)
 {
-	char *dest;
-	size_t start;
-	size_t i;
+	char	*new_bline;
+	int		start;
+	int		i;
 
-	if (!buf_line)
-		return (NULL);
 	start = 0;
 	i = 0;
-	while (buf_line[start] && buf_line[start] != '\n')
+	if (!buf_line)
+		return (NULL);
+	while (buf_line[start] != '\n' && buf_line[start])
 		start++;
 	if (buf_line[start] == '\n')
 		start++;
-	dest = malloc(ft_strlen(buf_line) - start + 1);
-	if (!dest)
+	new_bline = malloc((ft_strlen(buf_line) - start + 1) * sizeof(char));
+	if (!new_bline)
 		return (NULL);
 	while (buf_line[start + i])
 	{
-		dest[i] = buf_line[start + i];
+		new_bline[i] = buf_line[start + i];
 		i++;
 	}
-	free(buf_line);
-	dest[i] = '\0';
-	return (dest);
+	free (buf_line);
+	new_bline[i] = '\0';
+	return (new_bline);
 }
 
-static char *get_next_line(int fd)
-{
-	char *buf_read;
-	static char *buf_line;
-	char *line;
-
-	line = NULL;
-	buf_read = malloc (BUFFER_SIZE + 1);
-	if (BUFFER_SIZE <= 0|| fd < 0 || read(fd, 0, 0) < 0)
-	{
-		free (buf_read);
-		free (buf_line);
-		buf_read = NULL;
-		buf_line = NULL;
-		return (NULL);
-	}
-	if (!buf_read)
-		return (NULL);
-	buf_line = set_buf_line (fd, buf_line, buf_read);
-	if (*buf_line == 0)
-	{
-		free(buf_line);
-		return (NULL);
-	}
-	line = set_line(line, buf_line);
-	buf_line = offset_buf_line(buf_line);
-	return (line);
-}
-
+/*
+#include <stdio.h>
 int main()
 {
-	int fd = open("test.txt", O_RDWR);
-
-	printf("%s\n\n\n", get_next_line(fd));
-	printf("%s\n\n\n", get_next_line(fd));
-	printf("%s\n\n\n", get_next_line(fd));
-	printf("%s\n\n\n", get_next_line(fd));
-	printf("%s\n\n\n", get_next_line(fd));
-	printf("%s\n\n\n", get_next_line(fd));
-	return (0);
+	int	fd = open("text.txt", O_RDONLY);
+	printf("1: %s", get_next_line(fd));
+	printf("2: %s", get_next_line(fd));
+	printf("3: %s", get_next_line(fd));
+	printf("4: %s", get_next_line(fd));
+	printf("5: %s", get_next_line(fd));
+	printf("6: %s", get_next_line(fd));
+	printf("7: %s", get_next_line(fd));
+	printf("8: %s", get_next_line(fd));
+	printf("9: %s", get_next_line(fd));
+	printf("10: %s", get_next_line(fd));
+	printf("11: %s", get_next_line(fd));
+	printf("12: %s", get_next_line(fd));
+	close(fd);
 }
+*/
