@@ -15,6 +15,7 @@
 # ifndef BUFFER_SIZE
 #  define BUFFER_SIZE 20
 # endif
+// 1 - On définit une macro FD_MAX qui correspond au nb maximum de fd que l'on peut gérer simultanément
 # define FD_MAX 1024
 # include <stdlib.h>
 # include <unistd.h>

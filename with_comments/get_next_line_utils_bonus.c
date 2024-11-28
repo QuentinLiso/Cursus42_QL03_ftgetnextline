@@ -12,6 +12,7 @@
 
 #include "get_next_line_bonus.h"
 
+// 0 - Pas de changement ici pour la partie bonus
 size_t	ft_strlen(const char *s)
 {
 	int	len;

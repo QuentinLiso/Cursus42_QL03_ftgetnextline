@@ -12,9 +12,11 @@
 
 #include "get_next_line_bonus.h"
 
+// 1 - On ne change que la fonction get next line
 char	*get_next_line(int fd)
 {
 	char		*buf_read;
+	// 1.1 - On définit un tableau de variables char *, avec chaque index correspondant à un fd
 	static char	*buf_line[FD_MAX];
 	char		*line;
 
@@ -22,21 +24,27 @@ char	*get_next_line(int fd)
 	buf_read = malloc((BUFFER_SIZE + 1) * sizeof(char));
 	if (BUFFER_SIZE <= 0 || fd < 0 || read(fd, 0, 0) < 0)
 	{
+		// 1.2 - On modifie tous les appels à buf_line en buf_line[fd]
 		free(buf_line[fd]);
 		free(buf_read);
+		// 1.3 - Idem
 		buf_line[fd] = NULL;
 		buf_read = NULL;
 		return (NULL);
 	}
 	if (!buf_read)
 		return (NULL);
+	// 1.4 - Idem
 	buf_line[fd] = set_buf_line(fd, buf_line[fd], buf_read);
+	// 1.5 - Idem
 	if (*buf_line[fd] == 0)
 	{
 		free (buf_line[fd]);
 		return (buf_line[fd] = 0);
 	}
+	// 1.6 - Idem
 	line = set_line(buf_line[fd], line);
+	// 1.7 - Idem
 	buf_line[fd] = offset_buf_line(buf_line[fd]);
 	return (line);
 }
